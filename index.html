@@ -1,0 +1,2852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NAUTILUS HOUSE — An Unusual House</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+
+:root{
+    --bg:#eeece6;
+    --black:#11110f;
+    --white:#ffffff;
+    --gray:#77756e;
+    --line:rgba(17,17,15,.18);
+    --serif:"Playfair Display", serif;
+    --sans:"DM Sans", sans-serif;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:var(--bg);
+    color:var(--black);
+    font-family:var(--sans);
+    overflow-x:hidden;
+}
+
+img{
+    display:block;
+    width:100%;
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+button{
+    font-family:inherit;
+}
+
+/* =====================================================
+   LOADER
+===================================================== */
+
+.loader{
+    position:fixed;
+    inset:0;
+    background:#11110f;
+    color:white;
+    z-index:99999;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    transition:
+        opacity 1s ease,
+        visibility 1s ease;
+}
+
+.loader.done{
+    opacity:0;
+    visibility:hidden;
+}
+
+.loader-inner{
+    width:230px;
+}
+
+.loader-top{
+    display:flex;
+    justify-content:space-between;
+    font-size:9px;
+    letter-spacing:3px;
+    margin-bottom:16px;
+    opacity:.7;
+}
+
+.loader-line{
+    height:1px;
+    background:rgba(255,255,255,.25);
+    overflow:hidden;
+}
+
+.loader-progress{
+    width:0;
+    height:100%;
+    background:white;
+}
+
+/* =====================================================
+   CURSOR
+===================================================== */
+
+.cursor{
+    position:fixed;
+    width:9px;
+    height:9px;
+    border:1px solid white;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:99998;
+
+    transform:translate(-50%,-50%);
+
+    mix-blend-mode:difference;
+
+    transition:
+        width .25s ease,
+        height .25s ease,
+        background .25s ease;
+}
+
+.cursor.active{
+    width:55px;
+    height:55px;
+    background:white;
+}
+
+/* =====================================================
+   TOP NAVIGATION
+===================================================== */
+
+.nav{
+    position:fixed;
+    left:0;
+    top:0;
+
+    width:100%;
+    height:80px;
+
+    z-index:900;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 42px;
+
+    mix-blend-mode:difference;
+    color:white;
+}
+
+.nav-logo{
+    font-size:10px;
+    letter-spacing:4px;
+}
+
+.nav-center{
+    font-size:9px;
+    letter-spacing:3px;
+    opacity:.65;
+}
+
+.nav-menu{
+    display:flex;
+    gap:22px;
+}
+
+.nav-menu a{
+    font-size:9px;
+    letter-spacing:2px;
+    opacity:.7;
+}
+
+.nav-menu a:hover{
+    opacity:1;
+}
+
+/* =====================================================
+   SIDE INDEX
+===================================================== */
+
+.side-index{
+    position:fixed;
+    right:28px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    z-index:800;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    mix-blend-mode:difference;
+    color:white;
+}
+
+.side-index a{
+    width:5px;
+    height:5px;
+    border:1px solid white;
+    border-radius:50%;
+
+    transition:
+        transform .3s ease,
+        background .3s ease;
+}
+
+.side-index a.active{
+    background:white;
+    transform:scale(1.8);
+}
+
+/* =====================================================
+   GENERAL
+===================================================== */
+
+.section{
+    position:relative;
+}
+
+.kicker{
+    font-size:9px;
+    letter-spacing:4px;
+    text-transform:uppercase;
+    color:var(--gray);
+}
+
+.serif{
+    font-family:var(--serif);
+    font-style:italic;
+}
+
+.large-title{
+    font-size:clamp(65px,10vw,155px);
+    line-height:.82;
+    letter-spacing:-7px;
+    font-weight:400;
+}
+
+.medium-title{
+    font-size:clamp(50px,7vw,105px);
+    line-height:.88;
+    letter-spacing:-4px;
+    font-weight:400;
+}
+
+.text{
+    font-size:14px;
+    line-height:1.9;
+    color:#67645e;
+}
+
+.reveal{
+    opacity:0;
+    transform:translateY(50px);
+}
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero{
+    height:100svh;
+    min-height:700px;
+    overflow:hidden;
+    background:#111;
+    color:white;
+}
+
+.hero-image{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+}
+
+.hero-image img{
+    height:100%;
+    object-fit:cover;
+    transform:scale(1.08);
+    filter:brightness(.72);
+}
+
+.hero-overlay{
+    position:absolute;
+    inset:0;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,.4),
+            transparent 45%,
+            rgba(0,0,0,.55)
+        );
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+
+    height:100%;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+
+    padding:0 8vw;
+}
+
+.hero-small{
+    display:flex;
+    align-items:center;
+    gap:18px;
+
+    font-size:9px;
+    letter-spacing:4px;
+
+    margin-bottom:32px;
+}
+
+.hero-small i{
+    width:5px;
+    height:5px;
+    background:white;
+    border-radius:50%;
+}
+
+.hero-title{
+    font-size:clamp(80px,14vw,205px);
+    line-height:.74;
+    letter-spacing:-10px;
+    font-weight:300;
+}
+
+.hero-title em{
+    font-family:var(--serif);
+    font-style:italic;
+    font-weight:400;
+}
+
+.hero-meta{
+    position:absolute;
+    bottom:42px;
+    left:8vw;
+    right:8vw;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+
+    font-size:9px;
+    letter-spacing:3px;
+}
+
+.hero-scroll{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.hero-scroll-line{
+    width:65px;
+    height:1px;
+    background:white;
+}
+
+/* =====================================================
+   TABLE OF CONTENTS
+===================================================== */
+
+.contents{
+    min-height:100vh;
+    background:#11110f;
+    color:white;
+
+    padding:11vw 8vw;
+}
+
+.contents-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+
+    padding-bottom:70px;
+
+    border-bottom:1px solid rgba(255,255,255,.2);
+}
+
+.contents-title{
+    font-size:clamp(60px,9vw,130px);
+    line-height:.8;
+    letter-spacing:-6px;
+    font-weight:300;
+}
+
+.contents-title em{
+    font-family:var(--serif);
+}
+
+.contents-list{
+    margin-top:30px;
+}
+
+.contents-item{
+    display:grid;
+    grid-template-columns:80px 1fr 100px;
+
+    align-items:center;
+
+    padding:24px 0;
+
+    border-bottom:1px solid rgba(255,255,255,.13);
+
+    transition:
+        padding .4s ease,
+        opacity .4s ease;
+}
+
+.contents-item:hover{
+    padding-left:25px;
+}
+
+.contents-number{
+    font-family:var(--serif);
+    font-size:22px;
+    color:#777;
+}
+
+.contents-name{
+    font-size:13px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
+
+.contents-arrow{
+    text-align:right;
+    color:#777;
+}
+
+/* =====================================================
+   ARCHITECT
+===================================================== */
+
+.architect{
+    min-height:100vh;
+    background:#d8d4cb;
+
+    display:grid;
+    grid-template-columns:45% 55%;
+}
+
+.architect-copy{
+    padding:10vw 7vw;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.architect-copy h2{
+    margin:35px 0;
+}
+
+.architect-photo{
+    position:relative;
+    overflow:hidden;
+}
+
+.architect-photo img{
+    height:100%;
+    object-fit:cover;
+}
+
+.architect-label{
+    position:absolute;
+    bottom:35px;
+    left:35px;
+
+    background:white;
+    padding:13px 17px;
+
+    font-size:9px;
+    letter-spacing:2px;
+}
+
+/* =====================================================
+   IDEA
+===================================================== */
+
+.idea{
+    min-height:110vh;
+
+    background:#11110f;
+    color:white;
+
+    display:flex;
+    align-items:center;
+
+    padding:10vw 8vw;
+}
+
+.idea-inner{
+    width:100%;
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8vw;
+
+    align-items:center;
+}
+
+.idea-title{
+    font-size:clamp(60px,9vw,135px);
+    line-height:.8;
+    letter-spacing:-7px;
+    font-weight:300;
+}
+
+.idea-title em{
+    font-family:var(--serif);
+}
+
+.idea-image{
+    position:relative;
+    overflow:hidden;
+    height:75vh;
+}
+
+.idea-image img{
+    height:100%;
+    object-fit:cover;
+}
+
+.idea-caption{
+    position:absolute;
+    bottom:20px;
+    left:20px;
+
+    font-size:8px;
+    letter-spacing:3px;
+}
+
+/* =====================================================
+   SHELL / HOTSPOTS
+===================================================== */
+
+.shell{
+    min-height:110vh;
+    background:#e9e5dd;
+
+    padding:10vw 7vw;
+}
+
+.shell-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+
+    margin-bottom:70px;
+}
+
+.shell-header p{
+    max-width:350px;
+}
+
+.shell-image{
+    position:relative;
+    max-width:1200px;
+    margin:auto;
+}
+
+.shell-image img{
+    width:100%;
+}
+
+.hotspot{
+    position:absolute;
+
+    width:18px;
+    height:18px;
+
+    border:1px solid white;
+    border-radius:50%;
+
+    background:#111;
+
+    cursor:pointer;
+
+    transition:transform .3s ease;
+}
+
+.hotspot:hover{
+    transform:scale(1.5);
+}
+
+.hotspot span{
+    position:absolute;
+
+    left:35px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    white-space:nowrap;
+
+    background:#111;
+    color:white;
+
+    padding:12px 15px;
+
+    font-size:8px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+
+    opacity:0;
+    pointer-events:none;
+
+    transition:
+        opacity .3s ease,
+        transform .3s ease;
+}
+
+.hotspot:hover span{
+    opacity:1;
+    transform:translateY(-50%) translateX(5px);
+}
+
+.hotspot.one{
+    left:50%;
+    top:48%;
+}
+
+.hotspot.two{
+    left:72%;
+    top:38%;
+}
+
+.hotspot.three{
+    left:28%;
+    top:54%;
+}
+
+.hotspot.four{
+    left:65%;
+    top:67%;
+}
+
+/* =====================================================
+   FULL IMAGE QUOTE
+===================================================== */
+
+.full-image{
+    height:100svh;
+    min-height:700px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:#111;
+    color:white;
+}
+
+.full-image img{
+    position:absolute;
+    inset:0;
+
+    height:100%;
+    object-fit:cover;
+
+    filter:brightness(.62);
+}
+
+.full-image-content{
+    position:relative;
+    z-index:2;
+
+    height:100%;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+
+    padding:0 8vw;
+}
+
+.full-image-content h2{
+    font-size:clamp(70px,11vw,165px);
+    line-height:.78;
+    letter-spacing:-8px;
+    font-weight:300;
+}
+
+.full-image-content h2 em{
+    font-family:var(--serif);
+}
+
+/* =====================================================
+   GALLERY
+===================================================== */
+
+.gallery{
+    background:#11110f;
+    color:white;
+
+    padding:11vw 6vw;
+}
+
+.gallery-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+
+    margin-bottom:70px;
+}
+
+.gallery-head p{
+    max-width:330px;
+    color:#777;
+}
+
+.gallery-title{
+    font-size:clamp(60px,9vw,130px);
+    line-height:.8;
+    letter-spacing:-6px;
+    font-weight:300;
+}
+
+.gallery-title em{
+    font-family:var(--serif);
+}
+
+.gallery-grid{
+    display:grid;
+
+    grid-template-columns:
+        1.15fr
+        .85fr
+        1fr;
+
+    grid-template-rows:
+        340px
+        480px
+        350px;
+
+    gap:12px;
+}
+
+.gallery-card{
+    position:relative;
+    overflow:hidden;
+    cursor:pointer;
+}
+
+.gallery-card img{
+    height:100%;
+    object-fit:cover;
+
+    transition:
+        transform 1s cubic-bezier(.2,.7,.2,1);
+}
+
+.gallery-card:hover img{
+    transform:scale(1.07);
+}
+
+.gallery-card:nth-child(1){
+    grid-row:span 2;
+}
+
+.gallery-card:nth-child(4){
+    grid-column:2 / 4;
+}
+
+.gallery-card:nth-child(5){
+    grid-column:1 / 3;
+}
+
+.gallery-label{
+    position:absolute;
+    left:18px;
+    bottom:18px;
+
+    font-size:8px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+
+    text-shadow:0 2px 15px black;
+}
+
+/* =====================================================
+   ROOM SECTIONS
+===================================================== */
+
+.room{
+    min-height:100vh;
+
+    display:grid;
+    grid-template-columns:52% 48%;
+
+    background:#e6e1d8;
+}
+
+.room:nth-child(even){
+    background:#ded9d0;
+}
+
+.room-image{
+    overflow:hidden;
+}
+
+.room-image img{
+    height:100%;
+    object-fit:cover;
+
+    transition:transform 1.4s ease;
+}
+
+.room:hover .room-image img{
+    transform:scale(1.035);
+}
+
+.room-copy{
+    padding:9vw;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.room:nth-of-type(even) .room-image{
+    order:2;
+}
+
+.room:nth-of-type(even) .room-copy{
+    order:1;
+}
+
+.room-number{
+    font-family:var(--serif);
+    font-size:20px;
+    color:#888;
+    margin-bottom:25px;
+}
+
+.room-copy h2{
+    font-size:clamp(60px,8vw,120px);
+    line-height:.8;
+    letter-spacing:-6px;
+    font-weight:300;
+
+    margin-bottom:40px;
+}
+
+.room-copy h2 em{
+    font-family:var(--serif);
+}
+
+.room-copy p{
+    max-width:390px;
+}
+
+/* =====================================================
+   KITCHEN SPECIAL
+===================================================== */
+
+.kitchen{
+    min-height:100vh;
+
+    background:#cfc7bb;
+
+    display:grid;
+    grid-template-columns:40% 60%;
+}
+
+.kitchen-copy{
+    padding:10vw 7vw;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.kitchen-copy h2{
+    font-size:clamp(65px,9vw,130px);
+    line-height:.78;
+    letter-spacing:-7px;
+    font-weight:300;
+
+    margin:35px 0;
+}
+
+.kitchen-copy h2 em{
+    font-family:var(--serif);
+}
+
+.kitchen-photo{
+    position:relative;
+    overflow:hidden;
+}
+
+.kitchen-photo img{
+    height:100%;
+    object-fit:cover;
+}
+
+.kitchen-note{
+    position:absolute;
+    left:30px;
+    bottom:30px;
+
+    background:#111;
+    color:white;
+
+    padding:14px 18px;
+
+    font-size:8px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
+
+/* =====================================================
+   LIGHT
+===================================================== */
+
+.light{
+    height:100svh;
+    min-height:700px;
+
+    position:relative;
+    overflow:hidden;
+
+    background:#111;
+    color:white;
+}
+
+.light img{
+    position:absolute;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    filter:brightness(.55);
+}
+
+.light-content{
+    position:relative;
+    z-index:2;
+
+    height:100%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+}
+
+.light-title{
+    font-size:clamp(80px,13vw,190px);
+    line-height:.75;
+    letter-spacing:-9px;
+    font-weight:300;
+}
+
+.light-title em{
+    font-family:var(--serif);
+}
+
+/* =====================================================
+   STRUCTURE
+===================================================== */
+
+.structure{
+    min-height:100vh;
+
+    background:#ebe7df;
+
+    padding:11vw 7vw;
+}
+
+.structure-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+
+    margin-bottom:70px;
+}
+
+.structure-header p{
+    max-width:360px;
+}
+
+.structure-title{
+    font-size:clamp(60px,9vw,130px);
+    line-height:.8;
+    letter-spacing:-6px;
+    font-weight:300;
+}
+
+.structure-title em{
+    font-family:var(--serif);
+}
+
+.plans{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+}
+
+.plan{
+    background:white;
+
+    padding:30px;
+
+    overflow:hidden;
+}
+
+.plan img{
+    height:650px;
+    object-fit:contain;
+
+    transition:transform .8s ease;
+}
+
+.plan:hover img{
+    transform:scale(1.025);
+}
+
+.plan-caption{
+    padding-top:20px;
+
+    font-size:8px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+
+    color:#777;
+}
+
+/* =====================================================
+   FINAL
+===================================================== */
+
+.final{
+    height:100svh;
+    min-height:700px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:#111;
+    color:white;
+}
+
+.final img{
+    position:absolute;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    filter:brightness(.5);
+
+    transform:scale(1.04);
+}
+
+.final-content{
+    position:relative;
+    z-index:2;
+
+    height:100%;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+}
+
+.final-small{
+    font-size:9px;
+    letter-spacing:5px;
+    margin-bottom:35px;
+}
+
+.final-title{
+    font-size:clamp(70px,13vw,190px);
+    line-height:.73;
+    letter-spacing:-9px;
+    font-weight:300;
+}
+
+.final-title em{
+    font-family:var(--serif);
+}
+
+.final-location{
+    margin-top:45px;
+
+    font-size:9px;
+    letter-spacing:4px;
+}
+
+.footer{
+    position:absolute;
+
+    bottom:25px;
+    left:0;
+
+    width:100%;
+
+    text-align:center;
+
+    font-size:7px;
+    letter-spacing:3px;
+
+    opacity:.45;
+}
+
+/* =====================================================
+   LIGHTBOX
+===================================================== */
+
+.lightbox{
+    position:fixed;
+    inset:0;
+
+    background:rgba(10,10,9,.96);
+
+    z-index:999999;
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    padding:50px;
+}
+
+.lightbox.open{
+    display:flex;
+}
+
+.lightbox img{
+    max-width:92vw;
+    max-height:88vh;
+    width:auto;
+    object-fit:contain;
+}
+
+.close{
+    position:absolute;
+
+    top:25px;
+    right:35px;
+
+    color:white;
+
+    font-size:28px;
+
+    cursor:pointer;
+}
+
+.lightbox-caption{
+    position:absolute;
+
+    bottom:25px;
+    left:0;
+    width:100%;
+
+    text-align:center;
+
+    color:white;
+
+    font-size:8px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:800px){
+
+    .nav{
+        padding:0 20px;
+    }
+
+    .nav-center{
+        display:none;
+    }
+
+    .nav-menu{
+        gap:10px;
+    }
+
+    .nav-menu a{
+        font-size:7px;
+    }
+
+    .side-index{
+        display:none;
+    }
+
+    .hero-content{
+        padding:0 25px;
+    }
+
+    .hero-title{
+        font-size:22vw;
+        letter-spacing:-5px;
+    }
+
+    .hero-meta{
+        left:25px;
+        right:25px;
+        bottom:25px;
+    }
+
+    .contents{
+        padding:100px 25px;
+    }
+
+    .contents-header{
+        display:block;
+    }
+
+    .contents-item{
+        grid-template-columns:55px 1fr 30px;
+    }
+
+    .architect{
+        grid-template-columns:1fr;
+    }
+
+    .architect-photo{
+        height:65vh;
+        order:-1;
+    }
+
+    .architect-copy{
+        padding:80px 25px;
+    }
+
+    .idea{
+        padding:100px 25px;
+    }
+
+    .idea-inner{
+        grid-template-columns:1fr;
+    }
+
+    .idea-image{
+        height:65vh;
+    }
+
+    .shell{
+        padding:100px 20px;
+    }
+
+    .shell-header{
+        display:block;
+    }
+
+    .shell-header p{
+        margin-top:30px;
+    }
+
+    .hotspot{
+        width:13px;
+        height:13px;
+    }
+
+    .hotspot span{
+        left:20px;
+        font-size:6px;
+    }
+
+    .gallery{
+        padding:100px 15px;
+    }
+
+    .gallery-head{
+        display:block;
+    }
+
+    .gallery-head p{
+        margin-top:30px;
+    }
+
+    .gallery-grid{
+        grid-template-columns:1fr 1fr;
+        grid-template-rows:250px 250px 250px 250px;
+    }
+
+    .gallery-card:nth-child(1){
+        grid-row:span 2;
+    }
+
+    .gallery-card:nth-child(4){
+        grid-column:1 / 3;
+    }
+
+    .gallery-card:nth-child(5){
+        grid-column:1 / 3;
+    }
+
+    .room{
+        grid-template-columns:1fr;
+    }
+
+    .room-image{
+        height:65vh;
+    }
+
+    .room-copy{
+        min-height:60vh;
+        padding:80px 25px;
+    }
+
+    .room:nth-of-type(even) .room-image,
+    .room:nth-of-type(even) .room-copy{
+        order:initial;
+    }
+
+    .kitchen{
+        grid-template-columns:1fr;
+    }
+
+    .kitchen-photo{
+        height:65vh;
+        order:-1;
+    }
+
+    .kitchen-copy{
+        padding:80px 25px;
+    }
+
+    .light-content{
+        padding:25px;
+    }
+
+    .structure{
+        padding:100px 20px;
+    }
+
+    .structure-header{
+        display:block;
+    }
+
+    .structure-header p{
+        margin-top:30px;
+    }
+
+    .plans{
+        grid-template-columns:1fr;
+    }
+
+    .plan img{
+        height:450px;
+    }
+
+    .final-title{
+        font-size:22vw;
+        letter-spacing:-5px;
+    }
+
+    .cursor{
+        display:none;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- =====================================================
+     LOADER
+===================================================== -->
+
+<div class="loader">
+
+    <div class="loader-inner">
+
+        <div class="loader-top">
+            <span>NAUTILUS HOUSE</span>
+            <span>00</span>
+        </div>
+
+        <div class="loader-line">
+            <div class="loader-progress"></div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="cursor"></div>
+
+
+<!-- =====================================================
+     NAV
+===================================================== -->
+
+<nav class="nav">
+
+    <div class="nav-logo">
+        NAUTILUS HOUSE
+    </div>
+
+    <div class="nav-center">
+        JAVIER SENOSIAIN / 2007
+    </div>
+
+    <div class="nav-menu">
+
+        <a href="#contents">
+            INDEX
+        </a>
+
+        <a href="#final">
+            END
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     SIDE INDEX
+===================================================== -->
+
+<div class="side-index">
+
+    <a href="#hero" class="active"></a>
+    <a href="#contents"></a>
+    <a href="#architect"></a>
+    <a href="#idea"></a>
+    <a href="#shell"></a>
+    <a href="#inside"></a>
+    <a href="#living"></a>
+    <a href="#tv"></a>
+    <a href="#kitchen"></a>
+    <a href="#bedroom"></a>
+    <a href="#bathroom"></a>
+    <a href="#study"></a>
+    <a href="#structure"></a>
+    <a href="#final"></a>
+
+</div>
+
+
+<!-- =====================================================
+     01 HERO
+===================================================== -->
+
+<section class="hero section" id="hero">
+
+    <div class="hero-image">
+
+        <img
+            src="https://insideinside.org/wp-content/uploads/2022/03/01-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+            alt="Nautilus House exterior"
+        >
+
+        <div class="hero-overlay"></div>
+
+    </div>
+
+    <div class="hero-content">
+
+        <div class="hero-small">
+
+            <span>AN UNUSUAL HOUSE</span>
+
+            <i></i>
+
+            <span>MEXICO</span>
+
+        </div>
+
+        <h1 class="hero-title">
+
+            NAUTILUS<br>
+
+            <em>HOUSE</em>
+
+        </h1>
+
+    </div>
+
+    <div class="hero-meta">
+
+        <div class="hero-scroll">
+
+            <div class="hero-scroll-line"></div>
+
+            SCROLL TO EXPLORE
+
+        </div>
+
+        <div>
+
+            NAUCALPAN · 2007
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     02 CONTENTS
+===================================================== -->
+
+<section class="contents section" id="contents">
+
+    <div class="contents-header reveal">
+
+        <div>
+
+            <div class="kicker">
+                02 / EXPLORE
+            </div>
+
+            <h2 class="contents-title">
+
+                THE<br>
+                <em>INDEX.</em>
+
+            </h2>
+
+        </div>
+
+        <div class="kicker">
+            14 SECTIONS
+        </div>
+
+    </div>
+
+
+    <div class="contents-list">
+
+        <a class="contents-item" href="#architect">
+            <div class="contents-number">01</div>
+            <div class="contents-name">The Architect</div>
+            <div class="contents-arrow">↗</div>
+        </a>
+
+        <a class="contents-item" href="#idea">
+            <div class="contents-number">02</div>
+            <div class="contents-name">The Idea</div>
+            <div class="contents-arrow">↗</div>
+        </a>
+
+        <a class="contents-item" href="#shell">
+            <div class="contents-number">03</div>
+            <div class="contents-name">The Shell</div>
+            <div class="contents-arrow">↗</div>
+        </a>
+
+        <a class="contents-item" href="#inside">
+            <div class="contents-number">04</div>
+            <div class="contents-name">Inside</div>
+            <div class="contents-arrow">↗</div>
+        </a>
+
+        <a class="contents-item" href="#living">
+            <div class="contents-number">05</div>
+            <div class="contents-name">Living Room</div>
+            <div class="contents-arrow">↗</div>
+        </a>
+
+        <a class="contents-item" href="#tv">
+            <div class="contents-number">06</div>
+            <div class="contents-name">TV Room</div>
+            <div class="contents-arrow">↗</div>
+        </a>
+
+        <a class="contents-item" href="#kitchen">
+            <div class="contents-number">07</div>
+            <div class="contents-name">Kitchen</div>
+            <div class="contents-arrow">↗</div>
+        </a>
+
+        <a class="contents-item" href="#bedroom">
+            <div class="contents-number">08</div>
+            <div class="contents-name">Bedroom</div>
+            <div class="contents-arrow">↗</div>
+        </a>
+
+        <a class="contents-item" href="#bathroom">
+            <div class="contents-number">09</div>
+            <div class="contents-name">Bathroom</div>
+            <div class="contents-arrow">↗</div>
+        </a>
+
+        <a class="contents-item" href="#study">
+            <div class="contents-number">10</div>
+            <div class="contents-name">Study</div>
+            <div class="contents-arrow">↗</div>
+        </a>
+
+        <a class="contents-item" href="#structure">
+            <div class="contents-number">11</div>
+            <div class="contents-name">Structure</div>
+            <div class="contents-arrow">↗</div>
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     03 ARCHITECT
+===================================================== -->
+
+<section class="architect section" id="architect">
+
+    <div class="architect-copy reveal">
+
+        <div class="kicker">
+            03 / ARCHITECT
+        </div>
+
+        <h2 class="medium-title">
+
+            JAVIER<br>
+            <em>SENOSIAIN</em>
+
+        </h2>
+
+        <p class="text">
+
+            Javier Senosiain is a Mexican architect known
+            for organic architecture.
+
+            His buildings often use curves and natural forms
+            instead of traditional straight lines.
+
+            Nautilus House is one of his best-known projects.
+
+        </p>
+
+    </div>
+
+    <div class="architect-photo">
+
+        <img
+            src="https://insideinside.org/wp-content/uploads/2022/03/01-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+            alt="Nautilus House"
+        >
+
+        <div class="architect-label">
+            NAUTILUS HOUSE / MEXICO / 2007
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     04 IDEA
+===================================================== -->
+
+<section class="idea section" id="idea">
+
+    <div class="idea-inner">
+
+        <div class="reveal">
+
+            <div class="kicker">
+                04 / THE IDEA
+            </div>
+
+            <h2 class="idea-title">
+
+                WHAT IF<br>
+                A HOUSE<br>
+                COULD GROW<br>
+                LIKE A<br>
+                <em>SHELL?</em>
+
+            </h2>
+
+        </div>
+
+        <div class="idea-image reveal">
+
+            <img
+                src="https://insideinside.org/wp-content/uploads/2022/03/10-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+                alt="Organic interior"
+            >
+
+            <div class="idea-caption">
+                ORGANIC ARCHITECTURE
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     05 SHELL
+===================================================== -->
+
+<section class="shell section" id="shell">
+
+    <div class="shell-header reveal">
+
+        <div>
+
+            <div class="kicker">
+                05 / EXTERIOR
+            </div>
+
+            <h2 class="medium-title">
+
+                THE<br>
+                <em>SHELL.</em>
+
+            </h2>
+
+        </div>
+
+        <p class="text">
+
+            The outside of the house follows
+            the shape of a Nautilus shell.
+
+            Hover over the points to discover
+            the important details.
+
+        </p>
+
+    </div>
+
+
+    <div class="shell-image reveal">
+
+        <img
+            src="https://insideinside.org/wp-content/uploads/2022/03/01-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+            alt="Nautilus House exterior"
+        >
+
+        <div class="hotspot one">
+            <span>Organic shell form</span>
+        </div>
+
+        <div class="hotspot two">
+            <span>Colored glass</span>
+        </div>
+
+        <div class="hotspot three">
+            <span>Curved structure</span>
+        </div>
+
+        <div class="hotspot four">
+            <span>Natural light</span>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     06 ENTRANCE
+===================================================== -->
+
+<section class="full-image section" id="inside">
+
+    <img
+        src="https://insideinside.org/wp-content/uploads/2022/03/05-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+        alt="Nautilus entrance"
+    >
+
+    <div class="full-image-content reveal">
+
+        <div class="kicker" style="color:white;">
+            06 / ENTER
+        </div>
+
+        <h2>
+
+            WALK<br>
+            THROUGH<br>
+            THE <em>LIGHT.</em>
+
+        </h2>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     07 GALLERY
+===================================================== -->
+
+<section class="gallery section">
+
+    <div class="gallery-head reveal">
+
+        <div>
+
+            <div class="kicker">
+                07 / INSIDE
+            </div>
+
+            <h2 class="gallery-title">
+
+                INSIDE<br>
+                THE <em>SHELL.</em>
+
+            </h2>
+
+        </div>
+
+        <p>
+
+            Every space follows the same
+            organic language.
+
+            Curved walls, natural light,
+            plants and built-in furniture
+            become one composition.
+
+        </p>
+
+    </div>
+
+
+    <div class="gallery-grid reveal">
+
+
+        <!-- GARDEN -->
+
+        <div
+            class="gallery-card"
+            data-caption="Interior garden and living area"
+        >
+
+            <img
+                src="https://insideinside.org/wp-content/uploads/2022/03/Nautilus-Javier-Senosiain-Naucalpan-Mexico-Amazing-Architecture___media_library_original_1400_933.jpeg"
+                alt="Interior garden"
+            >
+
+            <div class="gallery-label">
+                INTERIOR GARDEN
+            </div>
+
+        </div>
+
+
+        <!-- STAIRS -->
+
+        <div
+            class="gallery-card"
+            data-caption="Organic staircase"
+        >
+
+            <img
+                src="https://insideinside.org/wp-content/uploads/2022/03/02-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+                alt="Organic staircase"
+            >
+
+            <div class="gallery-label">
+                STAIRCASE
+            </div>
+
+        </div>
+
+
+        <!-- LIGHT -->
+
+        <div
+            class="gallery-card"
+            data-caption="Colored light through the shell wall"
+        >
+
+            <img
+                src="https://insideinside.org/wp-content/uploads/2022/03/04-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+                alt="Colored light"
+            >
+
+            <div class="gallery-label">
+                LIGHT / COLOR
+            </div>
+
+        </div>
+
+
+        <!-- LIVING -->
+
+        <div
+            class="gallery-card"
+            data-caption="Living area surrounded by greenery"
+        >
+
+            <img
+                src="https://insideinside.org/wp-content/uploads/2022/03/06-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+                alt="Living room"
+            >
+
+            <div class="gallery-label">
+                LIVING AREA
+            </div>
+
+        </div>
+
+
+        <!-- TV -->
+
+        <div
+            class="gallery-card"
+            data-caption="TV room"
+        >
+
+            <img
+                src="https://insideinside.org/wp-content/uploads/2022/03/07-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+                alt="TV room"
+            >
+
+            <div class="gallery-label">
+                TV ROOM
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     08 LIVING ROOM
+===================================================== -->
+
+<section class="room section" id="living">
+
+    <div class="room-image">
+
+        <img
+            src="https://insideinside.org/wp-content/uploads/2022/03/03-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+            alt="Nautilus living area"
+        >
+
+    </div>
+
+    <div class="room-copy reveal">
+
+        <div class="room-number">
+            08 / 01
+        </div>
+
+        <div class="kicker">
+            SOCIAL SPACE
+        </div>
+
+        <h2>
+
+            LIVING<br>
+            <em>ROOM</em>
+
+        </h2>
+
+        <p class="text">
+
+            The living room grows from the interior garden.
+
+            Instead of normal walls, the space uses curves
+            and built-in furniture.
+
+            The room feels open and connected to nature.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     09 TV ROOM
+===================================================== -->
+
+<section class="room section" id="tv">
+
+    <div class="room-image">
+
+        <img
+            src="https://insideinside.org/wp-content/uploads/2022/03/07-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+            alt="Nautilus TV room"
+        >
+
+    </div>
+
+    <div class="room-copy reveal">
+
+        <div class="room-number">
+            09 / 02
+        </div>
+
+        <div class="kicker">
+            ENTERTAINMENT
+        </div>
+
+        <h2>
+
+            TV<br>
+            <em>ROOM</em>
+
+        </h2>
+
+        <p class="text">
+
+            The TV room is placed inside the
+            large belly of the shell.
+
+            The seats follow the curved walls
+            and create one continuous space.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     10 KITCHEN
+===================================================== -->
+
+<section class="kitchen section" id="kitchen">
+
+    <div class="kitchen-copy reveal">
+
+        <div class="kicker">
+            10 / SERVICE SPACE
+        </div>
+
+        <h2>
+
+            THE<br>
+            <em>KITCHEN.</em>
+
+        </h2>
+
+        <p class="text">
+
+            The kitchen is also part of the organic design.
+
+            The cabinets follow the curved wall
+            and the surfaces are integrated into the structure.
+
+            Nothing feels like a separate box.
+
+        </p>
+
+    </div>
+
+
+    <div class="kitchen-photo">
+
+        <img
+            src="https://i0.wp.com/ic.pics.livejournal.com/realtormarina/64216788/209069/209069_600.jpg"
+            alt="Nautilus House kitchen"
+        >
+
+        <div class="kitchen-note">
+            VERIFIED KITCHEN PHOTO
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     11 BEDROOM
+===================================================== -->
+
+<section class="room section" id="bedroom">
+
+    <div class="room-image">
+
+        <img
+            src="https://insideinside.org/wp-content/uploads/2022/03/11-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+            alt="Nautilus House bedroom"
+        >
+
+    </div>
+
+    <div class="room-copy reveal">
+
+        <div class="room-number">
+            11 / 03
+        </div>
+
+        <div class="kicker">
+            PRIVATE SPACE
+        </div>
+
+        <h2>
+
+            BED<br>
+            <em>ROOM</em>
+
+        </h2>
+
+        <p class="text">
+
+            The bedroom continues the same
+            soft and curved design.
+
+            The bed and storage follow
+            the shape of the walls.
+
+            There are no hard rectangular corners.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     12 BATHROOM
+===================================================== -->
+
+<section class="room section" id="bathroom">
+
+    <div class="room-image">
+
+        <img
+            src="https://insideinside.org/wp-content/uploads/2022/03/12-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+            alt="Nautilus House bathroom"
+        >
+
+    </div>
+
+    <div class="room-copy reveal">
+
+        <div class="room-number">
+            12 / 04
+        </div>
+
+        <div class="kicker">
+            PRIVATE SPACE
+        </div>
+
+        <h2>
+
+            BATH<br>
+            <em>ROOM</em>
+
+        </h2>
+
+        <p class="text">
+
+            The bathroom looks like a small
+            natural cave.
+
+            It has curved surfaces,
+            blue mosaic details and a
+            round opening for daylight.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     13 STUDY
+===================================================== -->
+
+<section class="room section" id="study">
+
+    <div class="room-image">
+
+        <img
+            src="https://insideinside.org/wp-content/uploads/2022/03/19-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+            alt="Nautilus House study"
+        >
+
+    </div>
+
+    <div class="room-copy reveal">
+
+        <div class="room-number">
+            13 / 05
+        </div>
+
+        <div class="kicker">
+            PRIVATE SPACE
+        </div>
+
+        <h2>
+
+            THE<br>
+            <em>STUDY</em>
+
+        </h2>
+
+        <p class="text">
+
+            The study is a quiet space inside the shell.
+
+            The curved desk and shelves are built
+            into the walls.
+
+            A special window gives a view
+            toward the landscape.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     14 LIGHT
+===================================================== -->
+
+<section class="light section">
+
+    <img
+        src="https://insideinside.org/wp-content/uploads/2022/03/04-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+        alt="Colored stained glass light"
+    >
+
+    <div class="light-content reveal">
+
+        <h2 class="light-title">
+
+            LIGHT<br>
+            BECOMES<br>
+            <em>COLOR.</em>
+
+        </h2>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     15 STRUCTURE
+===================================================== -->
+
+<section class="structure section" id="structure">
+
+    <div class="structure-header reveal">
+
+        <div>
+
+            <div class="kicker">
+                15 / STRUCTURE
+            </div>
+
+            <h2 class="structure-title">
+
+                INSIDE<br>
+                THE <em>PLAN.</em>
+
+            </h2>
+
+        </div>
+
+        <p class="text">
+
+            The house follows a spiral organization.
+
+            The drawings show how the building,
+            garden and circulation work together.
+
+        </p>
+
+    </div>
+
+
+    <div class="plans reveal">
+
+
+        <div class="plan">
+
+            <img
+                src="https://insideinside.org/wp-content/uploads/2022/03/23-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+                alt="Nautilus House plan"
+            >
+
+            <div class="plan-caption">
+                SITE / ENTRY LEVEL PLAN
+            </div>
+
+        </div>
+
+
+        <div class="plan">
+
+            <img
+                src="https://insideinside.org/wp-content/uploads/2022/03/24-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+                alt="Nautilus House spiral plan"
+            >
+
+            <div class="plan-caption">
+                SPIRAL CIRCULATION PLAN
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     16 FINAL
+===================================================== -->
+
+<section class="final section" id="final">
+
+    <img
+        src="https://insideinside.org/wp-content/uploads/2022/03/01-Nautilus-Javier-Senosiain-Naucalpan-Mexico.jpeg"
+        alt="Nautilus House"
+    >
+
+    <div class="final-content">
+
+        <div class="final-small">
+            END OF THE TOUR
+        </div>
+
+        <h2 class="final-title">
+
+            WOULD YOU<br>
+            <em>LIVE HERE?</em>
+
+        </h2>
+
+        <div class="final-location">
+
+            NAUCALPAN · MEXICO · 2007
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+
+        NAUTILUS HOUSE / JAVIER SENOSIAIN / ORGANIC ARCHITECTURE
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     LIGHTBOX
+===================================================== -->
+
+<div class="lightbox">
+
+    <div class="close">
+        ×
+    </div>
+
+    <img src="" alt="">
+
+    <div class="lightbox-caption"></div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   REGISTER GSAP
+===================================================== */
+
+gsap.registerPlugin(ScrollTrigger);
+
+
+/* =====================================================
+   LOADER
+===================================================== */
+
+const loaderProgress =
+    document.querySelector(".loader-progress");
+
+gsap.to(loaderProgress,{
+    width:"100%",
+    duration:1.5,
+    ease:"power2.inOut",
+
+    onComplete:()=>{
+
+        setTimeout(()=>{
+
+            document
+                .querySelector(".loader")
+                .classList.add("done");
+
+        },250);
+
+    }
+
+});
+
+
+/* =====================================================
+   CURSOR
+===================================================== */
+
+const cursor =
+    document.querySelector(".cursor");
+
+document.addEventListener("mousemove",(e)=>{
+
+    gsap.to(cursor,{
+        x:e.clientX,
+        y:e.clientY,
+        duration:.18,
+        ease:"power2.out"
+    });
+
+});
+
+
+document
+    .querySelectorAll("a,img,.gallery-card,.hotspot")
+    .forEach(el=>{
+
+        el.addEventListener("mouseenter",()=>{
+
+            cursor.classList.add("active");
+
+        });
+
+        el.addEventListener("mouseleave",()=>{
+
+            cursor.classList.remove("active");
+
+        });
+
+    });
+
+
+/* =====================================================
+   REVEAL ANIMATIONS
+===================================================== */
+
+document
+    .querySelectorAll(".reveal")
+    .forEach(element=>{
+
+        gsap.to(element,{
+
+            scrollTrigger:{
+                trigger:element,
+                start:"top 85%",
+                once:true
+            },
+
+            opacity:1,
+            y:0,
+
+            duration:1.1,
+
+            ease:"power3.out"
+
+        });
+
+    });
+
+
+/* =====================================================
+   HERO IMAGE
+===================================================== */
+
+gsap.to(".hero-image img",{
+
+    scale:1,
+
+    duration:2,
+
+    ease:"power3.out"
+
+});
+
+
+gsap.to(".hero-title",{
+
+    y:-80,
+
+    scrollTrigger:{
+
+        trigger:".hero",
+        start:"top top",
+        end:"bottom top",
+        scrub:1
+
+    }
+
+});
+
+
+gsap.to(".hero-image img",{
+
+    y:100,
+
+    scrollTrigger:{
+
+        trigger:".hero",
+        start:"top top",
+        end:"bottom top",
+        scrub:1
+
+    }
+
+});
+
+
+/* =====================================================
+   PARALLAX
+===================================================== */
+
+document
+    .querySelectorAll(
+        ".architect-photo img," +
+        ".idea-image img," +
+        ".room-image img," +
+        ".kitchen-photo img," +
+        ".full-image img," +
+        ".light img," +
+        ".final img"
+    )
+    .forEach(img=>{
+
+        gsap.to(img,{
+
+            yPercent:8,
+
+            ease:"none",
+
+            scrollTrigger:{
+
+                trigger:img.closest(".section"),
+                start:"top bottom",
+                end:"bottom top",
+                scrub:1
+
+            }
+
+        });
+
+    });
+
+
+/* =====================================================
+   GALLERY SCALE
+===================================================== */
+
+document
+    .querySelectorAll(".gallery-card img")
+    .forEach(img=>{
+
+        gsap.fromTo(img,
+
+            {
+                scale:1.12
+            },
+
+            {
+                scale:1,
+
+                scrollTrigger:{
+
+                    trigger:img.closest(".gallery-card"),
+                    start:"top 90%",
+                    end:"bottom 20%",
+                    scrub:1
+
+                }
+
+            }
+
+        );
+
+    });
+
+
+/* =====================================================
+   SIDE INDEX
+===================================================== */
+
+const sections = [
+    "hero",
+    "contents",
+    "architect",
+    "idea",
+    "shell",
+    "inside",
+    "living",
+    "tv",
+    "kitchen",
+    "bedroom",
+    "bathroom",
+    "study",
+    "structure",
+    "final"
+];
+
+const dots =
+    document.querySelectorAll(".side-index a");
+
+
+sections.forEach((id,index)=>{
+
+    ScrollTrigger.create({
+
+        trigger:"#"+id,
+
+        start:"top center",
+
+        end:"bottom center",
+
+        onEnter:()=>{
+            dots.forEach(d=>d.classList.remove("active"));
+            if(dots[index]){
+                dots[index].classList.add("active");
+            }
+        },
+
+        onEnterBack:()=>{
+            dots.forEach(d=>d.classList.remove("active"));
+            if(dots[index]){
+                dots[index].classList.add("active");
+            }
+        }
+
+    });
+
+});
+
+
+/* =====================================================
+   GALLERY LIGHTBOX
+===================================================== */
+
+const lightbox =
+    document.querySelector(".lightbox");
+
+const lightboxImage =
+    lightbox.querySelector("img");
+
+const lightboxCaption =
+    document.querySelector(".lightbox-caption");
+
+
+document
+    .querySelectorAll(".gallery-card")
+    .forEach(card=>{
+
+        card.addEventListener("click",()=>{
+
+            const image =
+                card.querySelector("img");
+
+            const caption =
+                card.dataset.caption || "";
+
+            lightboxImage.src =
+                image.src;
+
+            lightboxCaption.textContent =
+                caption;
+
+            lightbox.classList.add("open");
+
+            document.body.style.overflow="hidden";
+
+        });
+
+    });
+
+
+document
+    .querySelector(".close")
+    .addEventListener("click",closeLightbox);
+
+
+lightbox.addEventListener("click",(e)=>{
+
+    if(e.target === lightbox){
+        closeLightbox();
+    }
+
+});
+
+
+function closeLightbox(){
+
+    lightbox.classList.remove("open");
+
+    document.body.style.overflow="";
+
+}
+
+
+/* =====================================================
+   ESC CLOSE
+===================================================== */
+
+document.addEventListener("keydown",(e)=>{
+
+    if(e.key==="Escape"){
+
+        closeLightbox();
+
+    }
+
+});
+
+
+/* =====================================================
+   IMAGE HOVER
+===================================================== */
+
+document
+    .querySelectorAll(".gallery-card")
+    .forEach(card=>{
+
+        card.addEventListener("mousemove",(e)=>{
+
+            const rect =
+                card.getBoundingClientRect();
+
+            const x =
+                e.clientX - rect.left;
+
+            const y =
+                e.clientY - rect.top;
+
+            const rotateX =
+                ((y / rect.height)-.5)*-2;
+
+            const rotateY =
+                ((x / rect.width)-.5)*2;
+
+            gsap.to(card,{
+
+                rotateX,
+                rotateY,
+
+                transformPerspective:800,
+
+                duration:.4
+
+            });
+
+        });
+
+
+        card.addEventListener("mouseleave",()=>{
+
+            gsap.to(card,{
+
+                rotateX:0,
+                rotateY:0,
+
+                duration:.6
+
+            });
+
+        });
+
+    });
+
+
+/* =====================================================
+   SMOOTH ANCHOR
+===================================================== */
+
+document
+    .querySelectorAll('a[href^="#"]')
+    .forEach(link=>{
+
+        link.addEventListener("click",(e)=>{
+
+            const target =
+                document.querySelector(
+                    link.getAttribute("href")
+                );
+
+            if(target){
+
+                e.preventDefault();
+
+                target.scrollIntoView({
+                    behavior:"smooth"
+                });
+
+            }
+
+        });
+
+    });
+
+</script>
+
+</body>
+</html>
